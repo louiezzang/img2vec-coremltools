@@ -1,4 +1,3 @@
-import sys
 import re
 from collections import OrderedDict
 
@@ -7,7 +6,6 @@ import torch.nn as nn
 import torchvision
 
 import coremltools as ct
-from PIL import Image
 
 
 class Img2Vec(nn.Module):
@@ -72,7 +70,7 @@ if __name__ == "__main__":
     # assert len(class_labels) == 1000
     # print(class_labels)
 
-    ft_pred_model_bin = load_released_model("resnet18_ft_model-20220615133619.pth.tar", torch.device("cpu"))
+    ft_pred_model_bin = load_released_model("./model-20220831181924.pth.tar", torch.device("cpu"))
     ft_model_idx2label_map = dict(sorted(ft_pred_model_bin["idx2label_map"].items()))
     ft_model_class_labels = list(ft_model_idx2label_map.values())
     print(f"class labels of finetuned prediction model: {ft_model_class_labels}")
@@ -103,18 +101,7 @@ if __name__ == "__main__":
     ct.utils.rename_feature(spec, spec.description.output[1].name, "emb", rename_outputs=True)
     cml_model = ct.models.MLModel(spec)
 
-    cml_model.save("img2vec.mlmodel")
+    cml_model_file = "img2vec.mlmodel"
+    cml_model.save(cml_model_file)
+    print(f"Saved coremltools model file: {cml_model_file}")
 
-    IS_MACOS = sys.platform == "darwin"
-
-    test_img = Image.open("sample_img.webp")
-    test_img = test_img.resize((224, 224))
-
-    if IS_MACOS:
-        loaded_model = ct.models.MLModel("img2vec.mlmodel")
-        pred_output = loaded_model.predict({"image": test_img})
-        print("=" * 50)
-        # print(pred_output)
-
-        for k, v in pred_output.items():
-            print(f"{k}: {v}")
