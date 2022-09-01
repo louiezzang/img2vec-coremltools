@@ -46,4 +46,5 @@ __pycache__/
 *.out
 Pipfile.lock
 *.webp
+*.jpg
 *.tar
