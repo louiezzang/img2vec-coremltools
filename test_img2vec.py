@@ -6,7 +6,7 @@ from PIL import Image
 
 IS_MACOS = sys.platform == "darwin"
 
-test_img = Image.open("sample_img.webp")
+test_img = Image.open("sample_img.jpg")
 test_img = test_img.resize((224, 224))
 
 if IS_MACOS:
