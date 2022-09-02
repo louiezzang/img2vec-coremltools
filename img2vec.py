@@ -73,6 +73,7 @@ if __name__ == "__main__":
     ft_pred_model_bin = load_released_model("./model-20220831181924.pth.tar", torch.device("cpu"))
     ft_model_idx2label_map = dict(sorted(ft_pred_model_bin["idx2label_map"].items()))
     ft_model_class_labels = list(ft_model_idx2label_map.values())
+    print(f"number of class labels of finetuned prediction model: {len(ft_model_class_labels)}")
     print(f"class labels of finetuned prediction model: {ft_model_class_labels}")
 
     dummy_input = torch.rand(1, 3, 224, 224)
@@ -91,7 +92,8 @@ if __name__ == "__main__":
                            inputs=[ct.ImageType(name="image", color_layout="RGB", scale=1.0/255.0/0.226,
                                                 bias=(-0.485/0.226, -0.456/0.226, -0.406/0.226),
                                                 shape=dummy_input.shape)],
-                           classifier_config=ct.ClassifierConfig(ft_model_class_labels),
+                           classifier_config=ct.ClassifierConfig(class_labels=ft_model_class_labels,
+                                                                 predicted_feature_name="label"),
                            source="pytorch"
                            )
 
